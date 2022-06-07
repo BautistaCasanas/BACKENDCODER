@@ -46,10 +46,9 @@ class ContenedorFirebase {
 
   async update(id, content){
     let doc = this.collection.doc(`${id}`)
-    console.log (id + " - " + content)
     let item = await doc.update(content)
     return item
   }
 }
 
-module.exports =  ContenedorFirebase;
+module.exports =  {ContenedorFirebase};

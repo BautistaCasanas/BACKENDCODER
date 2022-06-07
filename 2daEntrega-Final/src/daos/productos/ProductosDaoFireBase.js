@@ -1,9 +1,9 @@
-const  ContenedorFirebase  = require("../../contenedores/ContenedorFireBase");
+const  {ContenedorFirebase}  = require("../../contenedores/ContenedorFireBase");
 
 class ProductosDaoFireBase extends ContenedorFirebase{
     constructor(){
         super('productos');
-        let productos = this.getAll();
+        // let productos = this.getAll();
     }
 }
 

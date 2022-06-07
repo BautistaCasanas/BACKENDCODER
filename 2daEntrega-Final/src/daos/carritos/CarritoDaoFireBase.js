@@ -1,12 +1,21 @@
-const { Container } = require("../../contenedores/ContenedorFireBase");
+const { ContenedorFirebase } = require("../../contenedores/ContenedorFireBase");
 
-class CarritoDaoFireBase extends Container{
+
+
+class CarritoDaoFireBase extends ContenedorFirebase{
     constructor(){
         super('carrito');
     }
-    async save(carrito = { productos: [] }) {
+    async save(carrito = {}) {
         return super.save(carrito)
+    }
+
+    async addProductToCart(cartId,product){
+        // let cart =  await super.getById(cartId);
+        // console.log(cart);
+        let insert = super.save(product);
+        return insert
     }
 }
 
-module.exports = { CarritoDaoFireBase }
+module.exports =  {CarritoDaoFireBase}
