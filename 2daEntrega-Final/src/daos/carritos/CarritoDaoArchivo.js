@@ -5,7 +5,6 @@ class CarritoDaoArchivo extends ContainerArchivo{
         super('./src/data/carrito.json');
         let cart = this.getAll();
         this.id = (cart.length > 0) ? cart.length + 1 : 1;
-        this.timesTrap= new Date();
     }
 
     async getAll() {
@@ -27,37 +26,26 @@ class CarritoDaoArchivo extends ContainerArchivo{
 
     async save() {
         let carritos = await this.getAll();
-        let diaCart = Date();
-        let productos = [];
-        let carrito = {id:this.id, fecha: diaCart, productos: productos}
-        carritos.push(carrito);
+        let cart = {id:this.id, productos:[]};
+        carritos.push(cart);
         this.guardarLocal(carritos);
+        return cart
     }
 
-    async addProductToCart(cartId, producto) {
-        let carritos = await this.getAll();
-        let carro = null;
-            if(carritos.length > 0) {
-                let element = carritos.find(elem => elem.id == cartId);
-                    if(element) {
-                        element.productos.push(producto);
-                        carro = element;
-                        let delCarrito = await this.deleteById(cartId)
-                        carritos.push(carro);
-                        console.log(JSON.stringify(carritos));
-                        let sortedArray = carritos.sort((a, b)=> a.id - b.id);
-                        this.guardarLocal(carritos);
-                    }
+    async addProductToCart(product,cartId) {
+        console.log(product);
+        let carts = await this.getAll();
+        let cart = null;
 
+        if(carts.length > 0){
+            let e = carts.find(elem=>elem.id == cartId);
+            if(e){
+                e.productos.push(product);
+                cart = e;
             }
-            return carro;
-    }
-
-    async getProdById(id){
-        let carrito = await this.getById(id);
-        if(carrito.length > 0) {
-            return carrito.productos;
+            this.guardarLocal(carts)
         }
+        return cart;
     }
 
     async delete(id) {

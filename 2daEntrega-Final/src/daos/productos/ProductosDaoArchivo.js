@@ -4,25 +4,39 @@ class ProductosDaoArchivo extends ContainerArchivo{
 
     constructor(){
         super("./src/data/productos.json");
-        this.id = 1
+        this.productos = this.getAll();
+        this.id = (this.productos.length > 0) ? this.productos.length + 1 : 1;
     }
 
     
-    async save(nombre, descripcion, codigo, precio, stock, fecha, img) {
+    async save(prod) {
         let productos = await this.getAll();
-        let producto = {id: this.id, nombre: nombre, descripcion: descripcion, codigo: codigo, precio: precio, stock: stock, fecha: fecha, img: img}
+        let producto = {id: this.id, ...prod}
         productos.push(producto);
         await this.guardarLocal(productos);
         this.id++;
     }
 
-    async update(id, nombre, descripcion, codigo, precio, stock, fecha, img) {
-        let deleteProduct = await this.deleteById(id);
-        let producto = {id: id, nombre: nombre, descripcion: descripcion, codigo: codigo, precio: precio, stock: stock, fecha: fecha, img: img}
-        let productos = await this.getAll();
-        productos.push(producto);
-        let sortedArray = productos.sort((a, b)=> a.id - b.id);
-        await this.guardarLocal(sortedArray);
+
+    async update(id,prod) {
+        let products = await this.getAll();
+        const productIndex =products.findIndex(p=>p.id == id);
+        console.log(productIndex);
+        if(productIndex == -1){
+            throw new Error("Producto No encontrado");
+        }
+        let productoActualizado ={
+            id: Number(id),
+            nombre:prod.nombre,
+            precio:prod.precio,
+            thumbnail:prod.thumbnail
+        };
+        console.log(productoActualizado);
+        products[productIndex] = productoActualizado;
+
+        this.guardarLocal(products)
+
+        return products
     }
 
     async getAll() {
@@ -42,15 +56,11 @@ class ProductosDaoArchivo extends ContainerArchivo{
         return producto;
     }
 
-    async deleteById(id) {
+    async delete(id) {
         let productos = await this.getAll();
-        if(productos.length > 0) {
-            let elements = productos.filter((elem) => elem.id == id);
-            if(elements) {
-                await this.guardarLocal(elements);
-            }
-        }
-        return productos;
+        let itemToDelete = productos.filter(e=>e.id !== Number(id));
+        this.guardarLocal(itemToDelete);
+        return itemToDelete
     }
 }
 
